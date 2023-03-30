@@ -4,7 +4,7 @@ import openai
 from flask import Flask, redirect, render_template, request, url_for
 
 app = Flask(__name__)
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = "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"
 
 
 @app.route("/", methods=("GET", "POST"))
@@ -15,6 +15,7 @@ def index():
             model="text-davinci-003",
             prompt=generate_prompt(animal),
             temperature=0.6,
+            max_tokens=600,
         )
         return redirect(url_for("index", result=response.choices[0].text))
 
@@ -22,14 +23,14 @@ def index():
     return render_template("index.html", result=result)
 
 
-def generate_prompt(animal):
-    return """Suggest three names for an animal that is a superhero.
+def generate_prompt(consulta):
+    return """ Eres un especialista en solucionar consultas técnicas para SQL
 
-Animal: Cat
-Names: Captain Sharpclaw, Agent Fluffball, The Incredible Feline
-Animal: Dog
-Names: Ruff the Protector, Wonder Canine, Sir Barks-a-Lot
-Animal: {}
-Names:""".format(
-        animal.capitalize()
+Q: Como selecciono todos los campos de un tablas
+A: SELECT * FROM tableName
+Q: Como agrego un filtro de ingresos a una consulta de la tabla de personal 
+A: SELECT * FROM tableName WHERE income > 50000  
+Q: {}
+A:""".format(
+        consulta.capitalize()
     )
